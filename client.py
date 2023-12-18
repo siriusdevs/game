@@ -1,8 +1,12 @@
 import socket
-from load_creds import load
+from load_creds import load_address
 
 client = socket.socket()
-client.connect(load())
+client.connect(load_address())
 
-msg = 'Hello'.encode()
-client.send(msg)
+while True:
+    msg = input()
+    if msg == 'q':
+        client.close()
+        break
+    client.send(msg.encode())

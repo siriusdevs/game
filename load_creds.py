@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 from os import environ
 
 
-def load():
+def load_address():
     load_dotenv()
     return (
         environ.get(
@@ -13,6 +13,23 @@ def load():
             environ.get(
             'PORT',
             default=4321,
+            )
+        )
+    )
+
+def load_size():
+    load_dotenv()
+    return (
+        int(
+            environ.get(
+                'WIDTH', 
+                default=120,
+            )
+        ),
+        int(
+            environ.get(
+                'HEIGHT',
+                default=80,
             )
         )
     )
