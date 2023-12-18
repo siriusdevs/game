@@ -50,6 +50,12 @@ class Game:
     def clear_field(self) -> None:
         self._field = [[' '] * self.width for _ in range(self.height)]
 
+    def move(self, player_key: str, direction: str) -> None:
+        player = self._players[player_key]
+        player.move(direction)
+        player.x %= self.width
+        player.y %= self.height
+
     def update_field(self) -> None:
         self.clear_field()
         for key, player in self._players.items():

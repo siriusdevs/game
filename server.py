@@ -16,17 +16,17 @@ key = game.add_player(player)
 while True:
     print(game.field)
     try:
-        msg = client_socket.recv(1024).decode()
+        direction = client_socket.recv(1024).decode()
     except KeyboardInterrupt:
         server.close()
         server.shutdown()
         break
 
-    if msg == 'q':
+    if direction == 'q':
         game.remove_player(key)
         server.close()
         server.shutdown()
         break
-    player.move(msg)
+    game.move(key, direction)
     game.update_field()
     system('clear')
