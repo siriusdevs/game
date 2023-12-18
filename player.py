@@ -55,10 +55,11 @@ class Game:
         player = self._players[key]
         if player.x == 0 and player.y == 0:
             return
-        for current in self._players.values():
+        for current_key, current in self._players.items():
             if current != player:
                 if current.x == player.x and current.y == player.y:
                     self.damage(player, key)
+                    self.damage(current, current_key)
                     break
     
     def damage(self, player: Player, key: str):
@@ -71,7 +72,7 @@ class Game:
         player.move(direction)
         player.x %= self.width
         player.y %= self.height
-        self.check_collision(player)
+        self.check_collision(player_key)
 
     def update_field(self) -> None:
         self.clear_field()
@@ -83,4 +84,4 @@ class Game:
         field = '\n'.join(['|' + ''.join(line) + '|' for line in self._field])
         bar = '-' * self.width
         lifes = [f'{key}{player.lifes}' for key, player in self._players.items()]
-        return '\n'.join([bar, field, bar, lifes])
+        return '\n'.join([bar, field, bar, ' | '.join(lifes)])

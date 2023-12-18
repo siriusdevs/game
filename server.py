@@ -38,4 +38,4 @@ while True:
     except KeyboardInterrupt:
         server.close()
         break
-    system('clear')
+    # system('clear')
