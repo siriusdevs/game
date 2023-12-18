@@ -12,13 +12,7 @@ game = Game(load_size())
 
 def process_player(key: str, client_socket: socket) -> None:
     while True:
-        try:
-            direction = client_socket.recv(1024).decode()
-        except KeyboardInterrupt:
-            server.close()
-            server.shutdown()
-            break
-
+        direction = client_socket.recv(1024).decode()
         if direction == 'q':
             game.remove_player(key)
             break

@@ -19,6 +19,7 @@ class Player:
         self.addr = addr
         self.x = 0
         self.y = 0
+        self.lifes = 3
 
     def move(self, direction: str):
         if direction not in self._moves.keys():
@@ -50,11 +51,27 @@ class Game:
     def clear_field(self) -> None:
         self._field = [[' '] * self.width for _ in range(self.height)]
 
+    def check_collision(self, key: str) -> None:
+        player = self._players[key]
+        if player.x == 0 and player.y == 0:
+            return
+        for current in self._players.values():
+            if current != player:
+                if current.x == player.x and current.y == player.y:
+                    self.damage(player, key)
+                    break
+    
+    def damage(self, player: Player, key: str):
+        player.lifes -= 1
+        if player.lifes <= 0:
+            self.remove_player(key)
+
     def move(self, player_key: str, direction: str) -> None:
         player = self._players[player_key]
         player.move(direction)
         player.x %= self.width
         player.y %= self.height
+        self.check_collision(player)
 
     def update_field(self) -> None:
         self.clear_field()
@@ -65,4 +82,5 @@ class Game:
     def field(self) -> list[list[str]]:
         field = '\n'.join(['|' + ''.join(line) + '|' for line in self._field])
         bar = '-' * self.width
-        return '\n'.join([bar, field, bar])
+        lifes = [f'{key}{player.lifes}' for key, player in self._players.items()]
+        return '\n'.join([bar, field, bar, lifes])
