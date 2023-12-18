@@ -63,4 +63,6 @@ class Game:
 
     @property
     def field(self) -> list[list[str]]:
-        return '\n'.join([''.join(line) for line in self._field])
+        field = '\n'.join(['|' + ''.join(line) + '|' for line in self._field])
+        bar = '-' * self.width
+        return '\n'.join([bar, field, bar])
