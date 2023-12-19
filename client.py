@@ -1,12 +1,33 @@
 import socket
 from load_creds import load_address
+from pynput import keyboard
+
 
 client = socket.socket()
 client.connect(load_address())
 
-while True:
-    msg = input()
-    if msg == 'q':
+keys_directions = {
+    keyboard.Key.up: 'w',
+    keyboard.Key.down: 's',
+    keyboard.Key.left: 'a',
+    keyboard.Key.right: 'd',
+}
+
+def on_press(key: str):
+    if key in keys_directions:
+        client.send(keys_directions[key].encode())
+    elif key == keyboard.Key.esc:
+        client.send('q'.encode())
         client.close()
-        break
-    client.send(msg.encode())
+        return
+
+
+listener = keyboard.Listener(on_press=on_press)
+try:
+    listener.start()
+except KeyboardInterrupt:
+    client.send('q'.encode())
+    client.close()
+
+listener.join()
+

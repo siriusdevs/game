@@ -1,6 +1,6 @@
 from socket import socket
 import random
-
+import time
 
 class Player:
     _moves = {
@@ -28,11 +28,25 @@ class Player:
         self.x += to_move[0]
         self.y += to_move[1]
 
+class Modifier:
+    symbol: str
+
+    def __init__(self, field_width: int, field_height: int) -> None:
+        self.x = random.randint(1, field_width-1)
+        self.y = random.randint(1, field_height-1)
+
+class Heart(Modifier):
+    symbol = chr(10084)
+
 class Game:
+    _modifier_interval = 10
+
     def __init__(self, size: tuple[int, int]) -> None:
+        self._time = time.time()
         self._symbols = [chr(i) for i in range(45, 127)]
         self.width, self.height = size[0], size[1]
         self._players = {}
+        self._modifiers: list[Modifier] = []
         self._field = []
         for _ in range(self.height):
             self._field.append([' '] * self.width)
@@ -61,6 +75,14 @@ class Game:
                     self.damage(player, key)
                     self.damage(current, current_key)
                     break
+        for modifier in self._modifiers:
+            if modifier.x == player.x and modifier.y == player.y:
+                if isinstance(modifier, Heart):
+                    self.add_life(player)
+                    self._modifiers.remove(modifier)
+
+    def add_life(self, player: Player):
+        player.lifes += 1
     
     def damage(self, player: Player, key: str):
         player.lifes -= 1
@@ -76,6 +98,10 @@ class Game:
 
     def update_field(self) -> None:
         self.clear_field()
+        if time.time() > self._time + self._modifier_interval:
+            self._modifiers.append(Heart())
+        for modifier in self._modifiers:
+            self._field[modifier.y][modifier.x] = modifier.symbol
         for key, player in self._players.items():
             self._field[player.y][player.x] = key
 
