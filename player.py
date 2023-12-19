@@ -60,6 +60,7 @@ class Game:
     def remove_player(self, symbol: str) -> None:
         if symbol in self._players.keys():
             self._symbols.append(symbol)
+            self._players[symbol].socket.close()
             del self._players[symbol]
     
     def clear_field(self) -> None:
@@ -112,3 +113,7 @@ class Game:
         bar = '-' * self.width
         lifes = [f'{key}{player.lifes}' for key, player in self._players.items()]
         return '\n'.join([bar, field, bar, ' | '.join(lifes)])
+
+    # def ban(self, key: str):
+    #     if key in self._players.keys():
+    #         del self._players[key]

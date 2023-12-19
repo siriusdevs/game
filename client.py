@@ -15,7 +15,11 @@ keys_directions = {
 
 def on_press(key: str):
     if key in keys_directions:
-        client.send(keys_directions[key].encode())
+        try:
+            client.send(keys_directions[key].encode())
+        except ConnectionError:
+            print('Вы были отключены от сервера!')
+            return
     elif key == keyboard.Key.esc:
         client.send('q'.encode())
         client.close()

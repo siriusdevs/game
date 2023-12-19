@@ -27,15 +27,23 @@ def accept_players() -> None:
         key = game.add_player(player)
         Thread(target=process_player, args=(key, client_socket)).start()
 
+def gameplay():
+    global game
+    while True:
+        game.update_field()
+        print(game.field)
+        try:
+            time.sleep(0.2)
+        except KeyboardInterrupt:
+            server.close()
+            break
+        system('clear')
+
+def admin():
+    global game
+    while True:
+        game.remove_player(input())
 
 Thread(target=accept_players).start()
-
-while True:
-    game.update_field()
-    print(game.field)
-    try:
-        time.sleep(0.2)
-    except KeyboardInterrupt:
-        server.close()
-        break
-    system('clear')
+Thread(target=gameplay).start()
+Thread(target=admin).start()
