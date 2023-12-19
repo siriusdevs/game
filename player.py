@@ -99,7 +99,8 @@ class Game:
     def update_field(self) -> None:
         self.clear_field()
         if time.time() > self._time + self._modifier_interval:
-            self._modifiers.append(Heart())
+            self._modifiers.append(Heart(self.width, self.height))
+            self._time = time.time()
         for modifier in self._modifiers:
             self._field[modifier.y][modifier.x] = modifier.symbol
         for key, player in self._players.items():
