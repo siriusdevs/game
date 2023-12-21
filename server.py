@@ -10,7 +10,7 @@ server.bind(load_address())
 server.listen()
 game = Game(load_size())
 
-def process_player(key: str, client_socket: socket) -> None:
+def player_commands(key: str, client_socket: socket) -> None:
     while True:
         direction = client_socket.recv(1024).decode()
         if direction == 'q':
@@ -22,22 +22,20 @@ def accept_players() -> None:
     global game
     while True:
         client_socket, address = server.accept()
+        key = game.add_player(client_socket, address)
 
-        player = Player(client_socket, address)
-        key = game.add_player(player)
-        Thread(target=process_player, args=(key, client_socket)).start()
+        Thread(target=player_commands, args=(key, client_socket)).start()
 
 def gameplay():
     global game
     while True:
         game.update_field()
-        print(game.field)
+        game.send_all()
         try:
-            time.sleep(0.2)
+            time.sleep(0.3)
         except KeyboardInterrupt:
             server.close()
             break
-        system('clear')
 
 def admin():
     global game
